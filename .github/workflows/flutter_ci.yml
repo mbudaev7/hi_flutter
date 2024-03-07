@@ -1,0 +1,65 @@
+name: Flutter GD test Web app CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Flutter GD test build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: "12.x"
+          cache: 'gradle'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.3.0"
+          channel: 'stable'
+          cache: true
+          
+      - name: Install dependencies
+        run: flutter pub get
+
+      # - name: Verify formatting
+      #   run: dart format --output=none --set-exit-if-changed .
+
+      # - name: Analyze project source
+      #   run: dart analyze --fatal-infos
+
+      - name: Run tests
+        run: flutter test
+
+      #- name: Start release build
+      #  run: flutter build appbundle
+      - name: Start web release build
+        run: flutter build web --release
+
+      - name: Publish Release artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: flutter-test-release
+          path: build/app/outputs/bundle/release/flutter-test-release.aab
+
+  deploy:
+    name: Flutter GD test deploy to GitHub pages
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download Release
+      uses: actions/download-artifact@v2
+      with:
+        name: flutter-test-release
+
+    - name: Deploy to gh-pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./
