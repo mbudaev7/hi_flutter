@@ -23,6 +23,9 @@ jobs:
           flutter-version: 3.3.0
           channel: 'stable'
           cache: true
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: 3.3
 
       - name: Check flutter
         run: flutter --version
