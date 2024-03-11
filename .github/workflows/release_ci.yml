@@ -1,11 +1,11 @@
 name: Flutter GD test Release app CI
 
 on:
-  #release:
-  #  types: [published]
-  push:
-    tags:
-      - 'v*.*.*'
+  release:
+    types: [published]
+  #push:
+  #  tags:
+  #    - '*.*.*'
   workflow_dispatch:
 
 jobs:
@@ -68,7 +68,7 @@ jobs:
       #  uses: r0adkll/upload-google-play@v1
       #  with:
       #    serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
-      #    packageName: 
+      #    packageName: com.test.flutter_android
       #    releaseFiles: app-release.aab
       #    track: alpha
       #    status: completed
