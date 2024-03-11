@@ -34,32 +34,32 @@ jobs:
       - name: Run tests
         run: flutter test
 
-      - name: Deploy to GitHub pages
-        uses: bluefireteam/flutter-gh-pages@v7
+      # - name: Deploy to GitHub pages
+      #   uses: bluefireteam/flutter-gh-pages@v7
 
-      #- name: Start web release build
-      #  run: flutter build web --release
-
-      #- name: Publish Release artifact
-      #  uses: actions/upload-artifact@v4
-      #  with:
-      #    name: web-release
-      #    path: ./build/web
+      - name: Start web release build
+        run: flutter build web --release --base-href "./"
+      
+      - name: Publish Release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-release
+          path: ./build/web
       
 
-  #deploy_gh:
-  #  name: Flutter GD test deploy to GitHub pages
-  #  needs: build
-  #  runs-on: ubuntu-latest
+  deploy_gh:
+    name: Flutter GD test deploy to GitHub pages
+    needs: build
+    runs-on: ubuntu-latest
 
-  #  steps:
-    #- name: Download Release
-    #  uses: actions/download-artifact@v4
-    #  with:
-    #    name: web-release
+    steps:
+    - name: Download Release
+      uses: actions/download-artifact@v4
+      with:
+        name: web-release
 
-    #- name: Deploy to gh-pages
-    #  uses: peaceiris/actions-gh-pages@v3
-    #  with:
-    #    github_token: ${{ secrets.GITHUB_TOKEN }}
-    #    publish_dir: ./
+    - name: Deploy to gh-pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./
