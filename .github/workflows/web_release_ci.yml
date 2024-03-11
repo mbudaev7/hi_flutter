@@ -38,7 +38,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: web-release
-          path: ./build
+          path: ./build/web
 
   deploy_gh:
     name: Flutter GD test deploy to GitHub pages
@@ -55,5 +55,4 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs
-        destination_dir: web
+        publish_dir: ./
