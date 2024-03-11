@@ -29,12 +29,11 @@ Configured process includes four different types of GitHub Actions workflows:
     * Deploy built and signed Android application bundle to Google Play Store (currently commented out)
 
 4. **Web Release** [release_ci.yml](https://github.com/mbudaev7/hi_flutter/blob/main/.github/workflows/release_ci.yml) workflow running each time we do push to `main` branch. As repository have protection rules, basically we run it each time we merge PR. This worflow is required to show current web preview version of `main` branch after we make changes.   
-
   This workflow will do following:
     * Install Java(for Gradle) and Flutter(Dart SDK) and Flutter dependencies (with `flutter pub get` command)
     * Dart linter checks with failing build if we get 'info' level warnings (with `dart analyze` command)
     * Runs all Flutter test suites (with `flutter test` command)
-    * Build Flutter application web version (with `flutter build web --release` command)
+    * Build Flutter application web version (with `flutter build web --release --base-href "/hi_flutter/"` command) for GitHib pages /hi_flutter default base href. 
     * Publish Flutter application web version to GitHub artifacts (will be available in workflow artifact section)
     * Deploy published artifact to GitHub pages in the same repo (`gh-pages` branch) so it could be acessible on the URL [https://mbudaev7.github.io/hi_flutter/](https://mbudaev7.github.io/hi_flutter/)
 
@@ -74,7 +73,7 @@ The list of issues encountered during configuration:
        ```Uncaught ReferenceError: _flutter is not defined```
 
        Fixed by setting correct base href in Flutter. Added `--base-href "/hi_flutter/"` parameter to `flutter build web` command.
-       Also applied alternative solution with usage of `bluefireteam/flutter-gh-pages@v7` step [docs](https://github.com/marketplace/actions/deploy-flutter-web-app-to-github-pages-removing-large-assets-notices-file), which skips on saving Flutter web release as artifact, but commented it for now. 
+       Also applied and tested alternative solution with usage of `bluefireteam/flutter-gh-pages@v7` step [docs](https://github.com/marketplace/actions/deploy-flutter-web-app-to-github-pages-removing-large-assets-notices-file), which skips on saving Flutter web release as artifact, but commented it for now. 
      
 
 ### Ongoing problems
