@@ -38,7 +38,7 @@ jobs:
       #   uses: bluefireteam/flutter-gh-pages@v7
 
       - name: Start web release build
-        run: flutter build web --release --base-href "./"
+        run: flutter build web --release --base-href "/hi_flutter/"
       
       - name: Publish Release artifact
         uses: actions/upload-artifact@v4
