@@ -29,7 +29,6 @@ Configured process includes four different types of GitHub Actions workflows:
     * Deploy built and signed Android application bundle to Google Play Store (currently commented out)
 
 4. **Web Release** [release_ci.yml](https://github.com/mbudaev7/hi_flutter/blob/main/.github/workflows/release_ci.yml) workflow running each time we do push to `main` branch. As repository have protection rules, basically we run it each time we merge PR. This worflow is required to show current web preview version of `main` branch after we make changes.   
-
   This workflow will do following:
     * Install Java(for Gradle) and Flutter(Dart SDK) and Flutter dependencies (with `flutter pub get` command)
     * Dart linter checks with failing build if we get 'info' level warnings (with `dart analyze` command)
