@@ -6,18 +6,18 @@ This project is a starting point for a Flutter application, basically 'Hello Wor
 
 Configured process includes four different types of GitHub Actions workflows:
 
-1. Pull Request(PR) [pr_ci.yml](https://github.com/mbudaev7/hi_flutter/blob/main/.github/workflows/pr_ci.yml) workflow that triggers on each commit in PR created to `main` branch. 
+1. *Pull Request(PR)* [pr_ci.yml](https://github.com/mbudaev7/hi_flutter/blob/main/.github/workflows/pr_ci.yml) workflow that triggers on each commit in PR created to `main` branch. 
   This workflow checks:
     * Install Java(for Gradle) and Flutter(Dart SDK) and Flutter dependencies (with `flutter pub get` command)
     * Dart language formatting (with `dart format` command)
     * Dart linter checks with failing build if we get 'info' level warnings (with `dart analyze` command)
     * Runs all Flutter test suites (with `flutter test` command)
 
-  > Note. PR is not permitted to be merged if this workflow fails.
+    > Note. PR is not permitted to be merged if this workflow fails.
 
-2. Nightly build [nightly_ci.yml](https://github.com/mbudaev7/hi_flutter/blob/main/.github/workflows/nightly_ci.yml) workflow that triggers each night at 1:05 AM UTC. This workflow run the same checks as previos one on current state of `main` branch. We need this to ensure our `main` is stable.
+2. *Nightly build* [nightly_ci.yml](https://github.com/mbudaev7/hi_flutter/blob/main/.github/workflows/nightly_ci.yml) workflow that triggers each night at 1:05 AM UTC. This workflow run the same checks as previos one on current state of `main` branch. We need this to ensure our `main` is stable.
 
-3. Release [release_ci.yml](https://github.com/mbudaev7/hi_flutter/blob/main/.github/workflows/release_ci.yml) workflow is triggered only for building and signing final Android release. To trigger the workflow you need create GitHub release (tag) and publish it (only published releases will trigger artifact build). 
+3. *Android Release* [release_ci.yml](https://github.com/mbudaev7/hi_flutter/blob/main/.github/workflows/release_ci.yml) workflow is triggered only for building and signing final Android release. To trigger the workflow you need create GitHub release (tag) and publish it (only published releases will trigger artifact build). 
   This workflow will do following:
     * Install Java(for Gradle) and Flutter(Dart SDK) and Flutter dependencies (with `flutter pub get` command)
     * Dart linter checks with failing build if we get 'info' level warnings (with `dart analyze` command)
@@ -27,7 +27,7 @@ Configured process includes four different types of GitHub Actions workflows:
     * Publish built and signed Android application bundle to GitHub artifacts (will be available in workflow artifact section)
     * Deploy built and signed Android application bundle to Google Play Store (currently commented out)
 
-4. Web Release [release_ci.yml](https://github.com/mbudaev7/hi_flutter/blob/main/.github/workflows/release_ci.yml) workflow running each time we do push to `main` branch. As repository have protection rules, basically we run it each time we merge PR. This worflow is required to show current web preview version of `main` branch after we make changes.   
+4. *Web Release* [release_ci.yml](https://github.com/mbudaev7/hi_flutter/blob/main/.github/workflows/release_ci.yml) workflow running each time we do push to `main` branch. As repository have protection rules, basically we run it each time we merge PR. This worflow is required to show current web preview version of `main` branch after we make changes.   
 
   This workflow will do following:
     * Install Java(for Gradle) and Flutter(Dart SDK) and Flutter dependencies (with `flutter pub get` command)
