@@ -36,6 +36,9 @@ jobs:
 
       # - name: Deploy to GitHub pages
       #   uses: bluefireteam/flutter-gh-pages@v7
+      #   with:
+      #     baseHref: /hi_flutter/
+      # Workig alternative of everything below (without saving artifact)
 
       - name: Start web release build
         run: flutter build web --release --base-href "/hi_flutter/"
@@ -58,7 +61,7 @@ jobs:
       with:
         name: web-release
 
-    - name: Deploy to gh-pages
+    - name: Deploy to GitHub pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
