@@ -3,10 +3,14 @@ name: Flutter GD test Release app CI
 on:
   release:
     types: [published]
+  #push:
+  #  tags:
+  #    - '*.*.*'
+  workflow_dispatch:
 
 jobs:
   build:
-    name: Flutter GD test build
+    name: Flutter GD test Android build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -31,11 +35,40 @@ jobs:
         run: flutter test
 
       - name: Start release build
-        run: flutter build appbundle
+        run: flutter build appbundle --build-name ${{github.ref_name}}
+
+      - name: Sign App Bundle
+        uses: r0adkll/sign-android-release@v1   
+        id: sign_app
+        with:
+         releaseDirectory: build/app/outputs/bundle/release/
+         signingKeyBase64: ${{ secrets.STORE_BASE64 }}
+         alias: ${{ secrets.KEY_ALIAS }}
+         keyStorePassword: ${{ secrets.STORE_PASSWORD }}
+         keyPassword: ${{ secrets.KEY_PASSWORD }}
 
       - name: Publish Release artifact
         uses: actions/upload-artifact@v4
         with:
-          name: release
-          path: ./build
+          name: android-release-${{github.ref_name}}
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
 
+  deploy:
+    name: Deploy Android Build
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Get Android Build from artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: android-release-${{github.ref_name}}
+
+      #- name: Release Build to Google Play
+      #  uses: r0adkll/upload-google-play@v1
+      #  with:
+      #    serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
+      #    packageName: com.test.flutter_android
+      #    releaseFiles: app-release.aab
+      #    track: alpha
+      #    status: completed
