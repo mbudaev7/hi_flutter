@@ -42,8 +42,8 @@ Configured process includes four different types of GitHub Actions workflows:
 ## Expected development process points
 
 * We are using simple [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow) with `main` branch and `feature/*` branches for each feature (for any devops related changes please use `devops/*` pattern).
-* We create PR to merge changes to `main` branch.
 * Developer should test changes locally in IDE (VS code Dart debug).
+* Developer should create PR to merge changes to `main` branch, merge possible only if all GH checks passed.
 * Developer should create GitHub Release with new release tag (currently standard [semver](https://semver.org/) is used in the project) to create final signed Android aritfact and publish it to Google Play store. 
 * Developer can check current Flutter web release state of `main` branch in GitHub pages [https://mbudaev7.github.io/hi_flutter/](https://mbudaev7.github.io/hi_flutter/) after PR is merged.
 
@@ -51,28 +51,40 @@ Configured process includes four different types of GitHub Actions workflows:
 
 The list of issues encountered during configuration:
 
-1. Dart SDK version. 
+1. Node.js 16 actions are deprecated.
+   Issue:
+
+   ```Node.js 16 actions are deprecated. Please update the following actions to use Node.js 20: actions/checkout@v3.```
+
+   Fixed by simple update to checkout step version 4. 
+
+2. Dart SDK version. 
    Issue:
    
    ```The current Dart SDK version is 2.18.0. Because hi_flutter requires SDK version >=3.3.0 <4.0.0, version solving failed.```
 
    This was due to Flutter test application SDK version requirement was higher than default SDK we get when we install Flutter on GitHub agent (with step `subosito/flutter-action@v2`). Trying to install Dart SDK with separate step `dart-lang/setup-dart@v1` didn't solved the issue, so had to find Flutter-Dart version match table and just raise Flutter version from `3.3.0` to `3.19.2`.
 
-2. GitHub pages deployment. 
+3. GitHub pages deployment. 
    Issues were:
      * Wrong build folder. That resulted in result artifact have everything we have ib ./build folder instead only web release. Fixed with correcting step `actions/upload-artifact@v4` parameters. 
 
      * Empty page with console error:
 
        ```Uncaught ReferenceError: _flutter is not defined```
+
+       Fixed by setting correct base href in Flutter. Added `--base-href "/hi_flutter/"` parameter to `flutter build web` command.
+       Also applied alternative solution with usage of `bluefireteam/flutter-gh-pages@v7` step [docs](https://github.com/marketplace/actions/deploy-flutter-web-app-to-github-pages-removing-large-assets-notices-file), which skips on saving Flutter web release as artifact, but commented it for now. 
      
 
 ### Ongoing problems
 
-1. Cache flutter/Dart/Java SDK. Issue is that we can't re-use Java SDK cache for each build.
+1. Cache Java SDK. Issue is that we can't re-use Java SDK cache for each build.
    Even after adding `cache: 'gradle'` to `actions/setup-java@v3` we get:
 
    ``` Warning: Error: Path Validation Error: Path(s) specified in the action for caching do(es) not exist, hence no cache is being saved```
+
+   Still no solution for now, followed official [instructions](https://github.com/actions/setup-java), so need to try to manually use [cache step](https://github.com/actions/cache).
 
 ## Documentation used
 
