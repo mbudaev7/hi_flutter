@@ -13,7 +13,8 @@ Configured process includes four different types of GitHub Actions workflows:
     * Dart linter checks with failing build if we get 'info' level warnings (with `dart analyze` command)
     * Runs all Flutter test suites (with `flutter test` command)
 
-    > Note. PR is not permitted to be merged if this workflow fails.
+
+    > **Note**. PR is not permitted to be merged if this workflow fails.
 
 2. **Nightly build** [nightly_ci.yml](https://github.com/mbudaev7/hi_flutter/blob/main/.github/workflows/nightly_ci.yml) workflow that triggers each night at 1:05 AM UTC. This workflow run the same checks as previos one on current state of `main` branch. We need this to ensure our `main` is stable.
 
@@ -51,17 +52,27 @@ Configured process includes four different types of GitHub Actions workflows:
 The list of issues encountered during configuration:
 
 1. Dart SDK version. 
-   Issue was:
+   Issue:
    
    ```The current Dart SDK version is 2.18.0. Because hi_flutter requires SDK version >=3.3.0 <4.0.0, version solving failed.```
 
    This was due to Flutter test application SDK version requirement was higher than default SDK we get when we install Flutter on GitHub agent (with step `subosito/flutter-action@v2`). Trying to install Dart SDK with separate step `dart-lang/setup-dart@v1` didn't solved the issue, so had to find Flutter-Dart version match table and just raise Flutter version from `3.3.0` to `3.19.2`.
 
 2. GitHub pages deployment. 
+   Issues were:
+     * Wrong build folder. That resulted in result artifact have everything we have ib ./build folder instead only web release. Fixed with correcting step `actions/upload-artifact@v4` parameters. 
+
+     * Empty page with console error:
+
+       ```Uncaught ReferenceError: _flutter is not defined```
+     
 
 ### Ongoing problems
 
-1. Cache flutter/Dart/Java SDK
+1. Cache flutter/Dart/Java SDK. Issue is that we can't re-use Java SDK cache for each build.
+   Even after adding `cache: 'gradle'` to `actions/setup-java@v3` we get:
+
+   ``` Warning: Error: Path Validation Error: Path(s) specified in the action for caching do(es) not exist, hence no cache is being saved```
 
 ## Documentation used
 
