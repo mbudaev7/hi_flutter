@@ -69,6 +69,6 @@ jobs:
       #  with:
       #    serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
       #    packageName: com.test.flutter_android
-      #    releaseFiles: app-release.aab
+      #    releaseFiles: ${{steps.sign_app.outputs.signedReleaseFile}}
       #    track: alpha
       #    status: completed
