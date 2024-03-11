@@ -1,9 +1,7 @@
-name: Flutter GD test Web app CI
+name: Flutter GD test Web Release app CI
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
     branches: [ "main" ]
   workflow_dispatch:
 
@@ -20,46 +18,42 @@ jobs:
           cache: 'gradle'
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.3.0"
+          flutter-version: 3.19.2
           channel: 'stable'
           cache: true
-          
+        
       - name: Install dependencies
         run: flutter pub get
 
-      # - name: Verify formatting
-      #   run: dart format --output=none --set-exit-if-changed .
-
-      # - name: Analyze project source
-      #   run: dart analyze --fatal-infos
+      - name: Dart linter
+        run: dart analyze --fatal-infos
 
       - name: Run tests
         run: flutter test
 
-      #- name: Start release build
-      #  run: flutter build appbundle
       - name: Start web release build
         run: flutter build web --release
 
       - name: Publish Release artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: flutter-test-release
-          path: build/app/outputs/bundle/release/flutter-test-release.aab
+          name: web-release
+          path: ./build
 
-  deploy:
+  deploy_gh:
     name: Flutter GD test deploy to GitHub pages
     needs: build
     runs-on: ubuntu-latest
 
     steps:
     - name: Download Release
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
-        name: flutter-test-release
+        name: web-release
 
     - name: Deploy to gh-pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./
+        publish_dir: ./docs
+        destination_dir: web
